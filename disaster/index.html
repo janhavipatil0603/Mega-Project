@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Disaster Relief Management</title>
+   <link rel="stylesheet" href="style.css">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+   <div class="app-container">
+       <header>
+           <h1>🌟 Disaster Relief Management</h1>
+           <p>Ensuring hope, one resource at a time.</p>
+       </header>
+
+       <nav>
+           <button class="nav-button" onclick="showSection('userSection')">User</button>
+           <button class="nav-button" onclick="showSection('distributorSection')">Distributor</button>
+           <button class="nav-button" onclick="showSection('adminSection')">Admin</button>
+       </nav>
+
+       <main>
+           <!-- User Section -->
+<section id="userSection" class="content-section hidden">
+    <div class="card">
+        <h2>User Verification</h2>
+        <p>Enter your details to verify and report resources received.</p>
+        <form id="userForm">
+            <div class="form-group">
+                <label for="aadhar">Aadhar Number:</label>
+                <input type="text" id="aadhar" placeholder="Enter Aadhar Number">
+            </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="Enter Your Name">
+            </div>
+            <button type="button" onclick="verifyUser()">Verify</button>
+        </form>
+        <div id="userVerificationResult" class="result-box"></div>
+    </div>
+ 
+    <!-- User Response Section (hidden by default) -->
+    <div id="userResponseSection" style="display: none;">
+        <h3>Resource Distribution Response</h3>
+        <form>
+            <div class="form-group">
+                <p>Select the resources you received:</p>
+                <label><input type="checkbox" id="food"> Food</label><br>
+                <label><input type="checkbox" id="shelter"> Shelter</label><br>
+                <label><input type="checkbox" id="water"> Water</label><br>
+                <label><input type="checkbox" id="clothes"> Clothes</label><br>
+                <label><input type="checkbox" id="firstAid"> First-Aid</label><br>
+            </div>
+            <button type="button" onclick="submitUserResponse()">Submit</button>
+        </form>
+    </div>
+ </section>
+
+           <!-- Distributor Section -->
+<section id="distributorSection" class="content-section hidden">
+    <div class="card">
+        <h2>Distributor Login</h2>
+        <p>Confirm distribution of resources.</p>
+        <form id="distributorForm" onsubmit="event.preventDefault(); distributorLogin();">
+            <div class="form-group">
+                <label for="distributorId">Distributor ID:</label>
+                <input type="text" id="distributorId" placeholder="Enter Distributor ID" onkeydown="checkEnter(event)">
+            </div>
+            <button type="button" onclick="distributorLogin()">Login</button>
+        </form>
+        <!-- Hidden Distribution Details -->
+        <div id="distributorResponseSection" style="display: none;">
+            <h3>Distribution Details</h3>
+            <form>
+                <div class="form-group">
+                    <label for="region">Select Region:</label>
+                    <select id="region">
+                        <option value="Satara">Satara</option>
+                        <option value="Patan">Patan</option>
+                        <option value="Koregaon">Koregaon</option>
+                        <option value="Karad">Karad</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="resourcesStatus">Resources Distributed: Relief Packet (Food, Water, Shelter, Clothes, First-Aid)</label>
+                    <select id="resourcesStatus">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                <button type="button" onclick="submitDistributorResponse()">Submit</button>
+            </form>
+        </div>
+    </div>
+</section>
+           
+           <!-- Admin Section -->
+           <section id="adminSection" class="content-section hidden">
+               <div class="card">
+                   <h2>Admin Login</h2>
+                   <p>Access the admin dashboard.</p>
+                   <form id="adminLoginForm">
+                       <div class="form-group">
+                           <label for="adminUsername">Username:</label>
+                           <input type="text" id="adminUsername" placeholder="Enter Username">
+                       </div>
+                       <div class="form-group">
+                           <label for="adminPassword">Password:</label>
+                           <input type="password" id="adminPassword" placeholder="Enter Password">
+                       </div>
+                       <button type="button" onclick="adminLogin()">Login</button>
+                   </form>
+                   <div id="adminDashboard" class="hidden">
+                       <h3>Admin Dashboard</h3>
+                       <p>View and match user and distributor responses.</p>
+                       <div id="adminResponses" class="response-box">
+                           <p>No responses yet.</p>
+                       </div>
+                   </div>
+               </div>
+           </section>
+       </main>
+
+       <footer>
+           <p>&copy; 2024 Disaster Relief Management. Designed with ❤️ for a better tomorrow.</p>
+       </footer>
+   </div>
+
+   <script>
+       function showSection(sectionId) {
+           const sections = document.querySelectorAll('.content-section');
+           sections.forEach(section => section.classList.add('hidden'));
+           document.getElementById(sectionId).classList.remove('hidden');
+       }
+
+       function verifyUser() {
+        const aadhar = document.getElementById('aadhar').value;
+        const name = document.getElementById('name').value;
+        const resultBox = document.getElementById('userVerificationResult');
+        const responseSection = document.getElementById('userResponseSection');
+ 
+        if (aadhar && name) {
+            resultBox.innerHTML = `<p>Verification successful for <b>${name}</b> (Aadhar: ${aadhar}).</p>`;
+            responseSection.style.display = "block"; // Show the response section after verification
+        } else {
+            resultBox.innerHTML = `<p class="error">Please fill out both fields!</p>`;
+            responseSection.style.display = "none"; // Keep it hidden if validation fails
+        }
+    }
+ 
+    function submitUserResponse() {
+        const resourcesReceived = [];
+ 
+        // Check which resources the user selected
+        if (document.getElementById('food').checked) resourcesReceived.push("Food");
+        if (document.getElementById('shelter').checked) resourcesReceived.push("Shelter");
+        if (document.getElementById('water').checked) resourcesReceived.push("Water");
+        if (document.getElementById('clothes').checked) resourcesReceived.push("Clothes");
+        if (document.getElementById('firstAid').checked) resourcesReceived.push("First-Aid");
+ 
+        if (resourcesReceived.length > 0) {
+            alert(`Response recorded: Resources Received - ${resourcesReceived.join(", ")}`);
+        } else {
+            alert("Please select at least one resource before submitting!");
+        }
+    }
+    function checkEnter(event) {
+        // check if the pressed key is 'Enter' (key code 13)
+        if (event.keyCode === 13) {
+            // Your logic for when Enter is pressed
+            alert("");
+        }
+    }
+    
+       
+       // Login validation for Distributor
+    function distributorLogin() {
+        const distributorId = document.getElementById('distributorId').value;
+        const responseSection = document.getElementById('distributorResponseSection');
+        
+        if (distributorId.trim()) {
+            // Simulated validation logic
+            if (distributorId === "validDistributorID") { // Replace with backend validation if needed
+                alert("Login successful!");
+                responseSection.style.display = "block"; // Show the Distribution Details section
+            } else {
+                alert("Invalid Distributor ID. Please try again.");
+                responseSection.style.display = "none"; // Keep it hidden for invalid login
+            }
+        } else {
+            alert("Please enter a valid ID.");
+            responseSection.style.display = "none"; // Keep it hidden for empty input
+        }
+    }
+
+    // Submit Distributor Response
+    function submitDistributorResponse() {
+        const region = document.getElementById('region').value;
+        const resourcesStatus = document.getElementById('resourcesStatus').value;
+
+        if (region && resourcesStatus) {
+            alert(`Response recorded:\nRegion - ${region}\nResources Distributed - ${resourcesStatus}`);
+        } else {
+            alert("Please fill in all fields before submitting!");
+        }
+    }
+
+    
+
+       
+
+       function adminLogin() {
+           const username = document.getElementById('adminUsername').value;
+           const password = document.getElementById('adminPassword').value;
+           if (username === "admin" && password === "admin123") {
+               document.getElementById('adminDashboard').classList.remove('hidden');
+           } else {
+               alert("Invalid credentials!");
+           }
+       }
+   </script>
+</body>
+</html>
+
+

@@ -137,7 +137,10 @@ This project is intended for research, academic, and humanitarian use only. Plea
 ---
 
 ## 🤝 Author
-
+**Janhavi Patil**
+**Prerna Jadhav**
+**Riya Desai**
+**Utkarsha Velhal**
 **Ganesh Kakde**  
 Built using: Streamlit, OpenCV, Twilio  
 For queries or contributions, please open an issue or pull request.
